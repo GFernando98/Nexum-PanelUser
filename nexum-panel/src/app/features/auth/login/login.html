@@ -1,0 +1,66 @@
+<div class="login-wrapper">
+    <p-card styleClass="shadow-4" [style]="{
+            width: '420px',
+            'max-width': '95vw'
+        }">
+
+        <ng-template pTemplate="header">
+            <div class="text-center pt-4 pb-2">
+                <h2 class="login-title">Nexum</h2>
+                <p class="login-subtitle">
+                    Iniciá sesión para continuar
+                </p>
+            </div>
+        </ng-template>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="flex flex-column gap-3">
+
+                <div class="flex flex-column gap-1">
+                    <label for="userName" class="font-medium" style="color: var(--text-primary)">
+                        Usuario
+                    </label>
+
+                    <input pInputText id="userName" formControlName="userName" placeholder="Ingresá tu usuario"
+                        class="w-full" />
+
+                    @if (form.get('userName')?.invalid &&
+                    form.get('userName')?.touched) {
+                    <small style="color: var(--danger)">
+                        El usuario es requerido.
+                    </small>
+                    }
+                </div>
+
+                <div class="flex flex-column gap-1">
+                    <label for="password" class="font-medium" style="color: var(--text-primary)">
+                        Contraseña
+                    </label>
+
+                    <p-password inputId="password" formControlName="password" placeholder="Ingresá tu contraseña"
+                        [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full">
+                    </p-password>
+
+                    @if (form.get('password')?.invalid &&
+                    form.get('password')?.touched) {
+                    <small style="color: var(--danger)">
+                        La contraseña es requerida.
+                    </small>
+                    }
+                </div>
+
+                @if (error) {
+                <p-message severity="error" styleClass="w-full">
+                    {{ error }}
+                </p-message>
+                }
+
+                <p-button type="submit" label="Iniciar sesión" icon="pi pi-sign-in" styleClass="w-full"
+                    [loading]="loading" [disabled]="form.invalid || loading">
+                </p-button>
+
+            </div>
+        </form>
+
+    </p-card>
+</div>

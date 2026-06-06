@@ -1,0 +1,72 @@
+<div class="layout-wrapper" [class.collapsed]="collapsed()">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <!-- Header -->
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="pi pi-box logo-icon"></i>
+                @if (!collapsed()) {
+                <span class="logo-text">Nexum</span>
+                }
+            </div>
+            <p-button [icon]="collapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'" [text]="true" [rounded]="true"
+                severity="secondary" (onClick)="toggleSidebar()" class="collapse-btn" />
+        </div>
+
+        <!-- Nav -->
+        <nav class="sidebar-nav">
+            @for (item of navItems; track item.route) {
+            <a [routerLink]="item.route" routerLinkActive="active" class="nav-item"
+                [pTooltip]="collapsed() ? item.label : ''" tooltipPosition="right">
+                <i [class]="item.icon"></i>
+                @if (!collapsed()) {
+                <span>{{ item.label }}</span>
+                }
+            </a>
+            }
+        </nav>
+
+        <!-- User info bottom -->
+        <div class="sidebar-footer">
+            @if (!collapsed()) {
+            <div class="user-info">
+                <p-avatar [label]="userInitials" shape="circle" styleClass="user-avatar" />
+                <div class="user-details">
+                    <span class="user-name">{{ auth.currentUser()?.fullName }}</span>
+                    <span class="user-role">{{ auth.currentUser()?.roles?.[0] }}</span>
+                </div>
+            </div>
+            } @else {
+            <p-avatar [label]="userInitials" shape="circle" styleClass="user-avatar" />
+            }
+        </div>
+
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <span class="page-title">Panel de administración</span>
+            </div>
+            <div class="topbar-right">
+                <p-button [icon]="darkMode() ? 'pi pi-sun' : 'pi pi-moon'" [text]="true" [rounded]="true"
+                    severity="secondary" (onClick)="toggleDarkMode()" pTooltip="Modo oscuro" tooltipPosition="bottom" />
+                <p-menu #menu [model]="userMenuItems" [popup]="true" />
+                <p-button [label]="auth.currentUser()?.userName" icon="pi pi-chevron-down" iconPos="right" [text]="true"
+                    severity="secondary" (onClick)="menu.toggle($event)" />
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <router-outlet />
+        </main>
+
+    </div>
+
+</div>
