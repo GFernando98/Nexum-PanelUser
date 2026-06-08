@@ -1,1 +1,97 @@
-<p>users-form works!</p>
+<div class="flex flex-column gap-4 p-4" style="max-width: 680px; margin: 0 auto">
+
+    <div class="flex align-items-center gap-2">
+        <p-button icon="pi pi-arrow-left" [text]="true" [rounded]="true" (onClick)="goBack()" />
+        <h2 class="m-0">{{ isEdit() ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+    </div>
+
+    <p-card>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="flex flex-column gap-4">
+
+                <div class="grid">
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Nombre</label>
+                        <input pInputText formControlName="firstName" placeholder="Nombre" class="w-full" />
+                        @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
+                        <small style="color: var(--danger)">El nombre es requerido.</small>
+                        }
+                    </div>
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Apellido</label>
+                        <input pInputText formControlName="lastName" placeholder="Apellido" class="w-full" />
+                        @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+                        <small style="color: var(--danger)">El apellido es requerido.</small>
+                        }
+                    </div>
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Email</label>
+                        <input pInputText formControlName="email" placeholder="email@ejemplo.com" class="w-full" />
+                        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+                        <small style="color: var(--danger)">Ingresá un email válido.</small>
+                        }
+                    </div>
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Usuario</label>
+                        <input pInputText formControlName="userName" placeholder="Nombre de usuario" class="w-full" />
+                        @if (form.get('userName')?.invalid && form.get('userName')?.touched) {
+                        <small style="color: var(--danger)">El usuario es requerido.</small>
+                        }
+                    </div>
+
+                    @if (!isEdit()) {
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Contraseña</label>
+                        <p-password formControlName="password" placeholder="Contraseña" [feedback]="true"
+                            [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full">
+                        </p-password>
+                        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+                        <small style="color: var(--danger)">La contraseña es requerida.</small>
+                        }
+                    </div>
+                    }
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Teléfono</label>
+                        <input pInputText formControlName="phoneNumber" placeholder="+504 9999-9999" class="w-full" />
+                    </div>
+
+                    <div class="col-12 md:col-6 flex flex-column gap-1">
+                        <label class="font-medium" style="color: var(--text-primary)">Rol</label>
+                        <p-select formControlName="roleId" [options]="roles()" optionLabel="name" optionValue="id"
+                            placeholder="Seleccioná un rol" styleClass="w-full">
+                        </p-select>
+                        @if (form.get('roleId')?.invalid && form.get('roleId')?.touched) {
+                        <small style="color: var(--danger)">El rol es requerido.</small>
+                        }
+                    </div>
+
+                    @if (isEdit()) {
+                    <div class="col-12 flex align-items-center gap-2">
+                        <p-toggleswitch formControlName="isActive" />
+                        <label class="font-medium" style="color: var(--text-primary)">Usuario activo</label>
+                    </div>
+                    }
+
+                </div>
+
+                <div class="flex justify-content-end gap-2">
+                    <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [text]="true"
+                        (onClick)="goBack()">
+                    </p-button>
+                    <p-button type="submit" [label]="isEdit() ? 'Guardar cambios' : 'Crear usuario'" icon="pi pi-check"
+                        [loading]="loading()" [disabled]="form.invalid || loading()">
+                    </p-button>
+                </div>
+
+            </div>
+        </form>
+    </p-card>
+
+</div>
+
+<p-toast />

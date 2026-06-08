@@ -1,0 +1,14 @@
+.permission-item {
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+
+  &.selected {
+    background: var(--primary-100, #ede9fe);
+    border-color: var(--primary-color);
+    font-weight: 500;
+  }
+}

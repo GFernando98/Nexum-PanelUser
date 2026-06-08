@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { StorageService } from './storage.service';
+import { Permission } from '../authorization/permissions.enum';
 
 export interface LoginRequest {
     userName: string;
@@ -18,6 +19,17 @@ export interface AuthResponse {
     userName: string;
     fullName: string;
     roles: string[];
+    permissions: string[];
+}
+
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ResetPasswordRequest {
+    email: string;
+    token: string;
+    newPassword: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,6 +43,12 @@ export class AuthService {
     currentUser = signal<AuthResponse | null>(
         this.storage.getUser<AuthResponse>()
     );
+
+    hasPermission(permission: Permission): boolean {
+        const user = this.currentUser();
+        if (!user) return false;
+        return user.permissions.includes(permission.toString());
+    }
 
     login(request: LoginRequest) {
         return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
@@ -50,5 +68,13 @@ export class AuthService {
 
     isAuthenticated(): boolean {
         return this.storage.isAuthenticated();
+    }
+
+    forgotPassword(request: ForgotPasswordRequest) {
+        return this.http.post(`${this.baseUrl}/forgot-password`, request);
+    }
+
+    resetPassword(request: ResetPasswordRequest) {
+        return this.http.post(`${this.baseUrl}/reset-password`, request);
     }
 }

@@ -1,24 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { PaginatedQuery, PaginatedResult } from './role.service';
 
-export interface PageRequest {
-    pageNumber?: number;
-    pageSize?: number;
-    parameter?: string;
-    order?: string;
-    column?: string;
-    all?: boolean;
-}
-
-export interface PaginatedResult<T> {
-    data: T[];
-    pageNumber: number;
-    pageSize: number;
-    totalCount: number;
-    totalPages: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+export interface RoleRef {
+    id: string;
+    name: string;
 }
 
 export interface UserDto {
@@ -28,10 +15,10 @@ export interface UserDto {
     fullName: string;
     email: string;
     userName: string;
-    phoneNumber?: string;
+    phoneNumber: string | null;
     isActive: boolean;
     createdAt: string;
-    roles: string[];
+    roles: RoleRef[];
 }
 
 export interface CreateUserRequest {
@@ -40,7 +27,7 @@ export interface CreateUserRequest {
     email: string;
     userName: string;
     password: string;
-    phoneNumber?: string;
+    phoneNumber?: string | null;
     roleId: string;
 }
 
@@ -48,25 +35,34 @@ export interface EditUserRequest {
     id: string;
     firstName: string;
     lastName: string;
-    phoneNumber?: string;
+    phoneNumber?: string | null;
     isActive: boolean;
 }
 
+export interface ChangePasswordRequest {
+    id: string;
+    currentPassword: string;
+    newPassword: string;
+}
+
+export interface AssignRoleRequest {
+    userId: string;
+    roleName: string;
+}
+
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class UsersService {
+    private http = inject(HttpClient);
     private readonly baseUrl = `${environment.apiUrl}/api/Users`;
 
-    constructor(private http: HttpClient) { }
-
-    getAll(request: PageRequest = {}) {
-        let params = new HttpParams()
-            .set('pageNumber', request.pageNumber ?? 1)
-            .set('pageSize', request.pageSize ?? 10);
-
-        if (request.parameter) params = params.set('parameter', request.parameter);
-        if (request.order) params = params.set('order', request.order);
-        if (request.column) params = params.set('column', request.column);
-        if (request.all) params = params.set('all', request.all);
+    getAll(query: PaginatedQuery = {}) {
+        let params = new HttpParams();
+        if (query.pageNumber != null) params = params.set('PageNumber', query.pageNumber);
+        if (query.pageSize != null) params = params.set('PageSize', query.pageSize);
+        if (query.parameter) params = params.set('Parameter', query.parameter);
+        if (query.order) params = params.set('Order', query.order);
+        if (query.column) params = params.set('Column', query.column);
+        if (query.all != null) params = params.set('All', query.all);
 
         return this.http.get<PaginatedResult<UserDto>>(`${this.baseUrl}/GetAll`, { params });
     }
@@ -76,7 +72,7 @@ export class UserService {
     }
 
     create(request: CreateUserRequest) {
-        return this.http.post<string>(`${this.baseUrl}/Create`, request);
+        return this.http.post(`${this.baseUrl}/Create`, request);
     }
 
     edit(id: string, request: EditUserRequest) {
@@ -87,15 +83,11 @@ export class UserService {
         return this.http.delete(`${this.baseUrl}/Delete/${id}`);
     }
 
-    changePassword(id: string, currentPassword: string, newPassword: string) {
-        return this.http.patch(`${this.baseUrl}/${id}/change-password`, {
-            id, currentPassword, newPassword
-        });
+    changePassword(id: string, request: ChangePasswordRequest) {
+        return this.http.patch(`${this.baseUrl}/change-password/${id}`, request);
     }
 
-    assignRole(id: string, roleName: string) {
-        return this.http.patch(`${this.baseUrl}/assign-role${id}`, {
-            userId: id, roleName
-        });
+    assignRole(id: string, request: AssignRoleRequest) {
+        return this.http.patch(`${this.baseUrl}/assign-role/${id}`, request);
     }
 }

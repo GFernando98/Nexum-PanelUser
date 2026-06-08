@@ -49,6 +49,12 @@
                     }
                 </div>
 
+                <div class="flex justify-content-end">
+                    <a routerLink="/auth/forgot-password" class="text-sm" style="color: var(--primary-color)">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
                 @if (error) {
                 <p-message severity="error" styleClass="w-full">
                     {{ error }}
