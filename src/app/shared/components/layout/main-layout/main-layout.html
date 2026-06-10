@@ -17,7 +17,10 @@
 
         <!-- Nav -->
         <nav class="sidebar-nav">
-            @for (item of navItems; track item.route) {
+            @for (item of visibleNavItems(); track item.label) {
+
+            @if (!item.children) {
+            <!-- Item simple -->
             <a [routerLink]="item.route" routerLinkActive="active" class="nav-item"
                 [pTooltip]="collapsed() ? item.label : ''" tooltipPosition="right">
                 <i [class]="item.icon"></i>
@@ -25,10 +28,47 @@
                 <span>{{ item.label }}</span>
                 }
             </a>
+
+            } @else {
+            <!-- Grupo con hijos -->
+            <div class="nav-group">
+                <div class="nav-item nav-group-header" (click)="toggleGroup(item.label)"
+                    [pTooltip]="collapsed() ? item.label : ''" tooltipPosition="right">
+                    <i [class]="item.icon"></i>
+                    @if (!collapsed()) {
+                    <span class="flex-1">{{ item.label }}</span>
+                    <i class="pi nav-chevron" [class.pi-chevron-down]="!isGroupExpanded(item.label)"
+                        [class.pi-chevron-up]="isGroupExpanded(item.label)">
+                    </i>
+                    }
+                </div>
+
+                @if (isGroupExpanded(item.label) && !collapsed()) {
+                <div class="nav-group-children">
+                    @for (child of item.children; track child.route) {
+                    <a [routerLink]="child.route" routerLinkActive="active" class="nav-item nav-child-item">
+                        <i [class]="child.icon"></i>
+                        <span>{{ child.label }}</span>
+                    </a>
+                    }
+                </div>
+                }
+
+                @if (collapsed()) {
+                @for (child of item.children; track child.route) {
+                <a [routerLink]="child.route" routerLinkActive="active" class="nav-item" [pTooltip]="child.label"
+                    tooltipPosition="right">
+                    <i [class]="child.icon"></i>
+                </a>
+                }
+                }
+            </div>
+            }
+
             }
         </nav>
 
-        <!-- User info bottom -->
+        <!-- Footer -->
         <div class="sidebar-footer">
             @if (!collapsed()) {
             <div class="user-info">
