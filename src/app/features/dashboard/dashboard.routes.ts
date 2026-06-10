@@ -4,6 +4,10 @@ import { Permission } from '../../core/authorization/permissions.enum'; // agreg
 
 export const dashboardRoutes: Routes = [
     {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard').then(m => m.Dashboard)
+    },
+    {
         path: 'users',
         children: [
             {

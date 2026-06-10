@@ -37,6 +37,7 @@ export interface EditUserRequest {
     lastName: string;
     phoneNumber?: string | null;
     isActive: boolean;
+    roleId: string;
 }
 
 export interface ChangePasswordRequest {
@@ -72,7 +73,7 @@ export class UsersService {
     }
 
     create(request: CreateUserRequest) {
-        return this.http.post(`${this.baseUrl}/Create`, request);
+        return this.http.post(`${this.baseUrl}/Create`, request, { responseType: 'text' });
     }
 
     edit(id: string, request: EditUserRequest) {

@@ -115,8 +115,8 @@ export class UsersForm implements OnInit {
     const id = this.userId();
 
     if (this.isEdit() && id) {
-      const { firstName, lastName, phoneNumber, isActive } = this.form.getRawValue();
-      this.usersService.edit(id, { id, firstName, lastName, phoneNumber, isActive }).subscribe({
+      const { firstName, lastName, phoneNumber, isActive, roleId } = this.form.getRawValue();
+      this.usersService.edit(id, { id, firstName, lastName, phoneNumber, isActive, roleId }).subscribe({
         next: () => this.handleSuccess('Usuario actualizado correctamente.'),
         error: err => this.handleError(err)
       });

@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
+import { Component, inject, signal, computed, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -6,11 +6,16 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-import { PermissionService } from '../../../../core/services/permission.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Permission } from '../../../constants/permissions.enum';
+import { Permission } from '../../../../core/authorization/permissions.enum';
 
-
+export interface NavItem {
+    label: string;
+    icon: string;
+    route?: string;
+    permission: Permission | null;
+    children?: NavItem[];
+}
 
 @Component({
     selector: 'app-main-layout',
@@ -30,10 +35,10 @@ import { Permission } from '../../../constants/permissions.enum';
 })
 export class MainLayout {
     auth = inject(AuthService);
-    permissions = inject(PermissionService);
 
     collapsed = signal(false);
     darkMode = signal(false);
+    expandedGroups = signal<Set<string>>(new Set());
 
     Permission = Permission;
 
@@ -45,20 +50,49 @@ export class MainLayout {
         }
     ];
 
-    navItems = [
+    private allNavItems: NavItem[] = [
         {
-            label: 'Usuarios',
-            icon: 'pi pi-users',
-            route: '/users',
-            permission: Permission.CanViewUsers
+            label: 'Dashboard',
+            icon: 'pi pi-home',
+            route: '/dashboard',
+            permission: null
         },
         {
-            label: 'Roles',
-            icon: 'pi pi-shield',
-            route: '/roles',
-            permission: Permission.CanViewRoles
+            label: 'Configuración',
+            icon: 'pi pi-cog',
+            permission: null,
+            children: [
+                {
+                    label: 'Usuarios',
+                    icon: 'pi pi-users',
+                    route: '/users',
+                    permission: Permission.CanViewUsers
+                },
+                {
+                    label: 'Roles',
+                    icon: 'pi pi-shield',
+                    route: '/roles',
+                    permission: Permission.CanViewRoles
+                }
+            ]
         }
     ];
+
+    visibleNavItems = computed(() => {
+        return this.allNavItems
+            .map(item => {
+                if (item.children) {
+                    const visibleChildren = item.children.filter(child =>
+                        child.permission === null || this.auth.hasPermission(child.permission)
+                    );
+                    if (visibleChildren.length === 0) return null;
+                    return { ...item, children: visibleChildren };
+                }
+                if (item.permission !== null && !this.auth.hasPermission(item.permission)) return null;
+                return item;
+            })
+            .filter(Boolean) as NavItem[];
+    });
 
     toggleSidebar(): void {
         this.collapsed.update(v => !v);
@@ -66,16 +100,22 @@ export class MainLayout {
 
     toggleDarkMode(): void {
         this.darkMode.update(v => !v);
-        if (this.darkMode()) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
+        document.documentElement.toggleAttribute('data-theme', this.darkMode());
+    }
+
+    toggleGroup(label: string): void {
+        const s = new Set(this.expandedGroups());
+        s.has(label) ? s.delete(label) : s.add(label);
+        this.expandedGroups.set(s);
+    }
+
+    isGroupExpanded(label: string): boolean {
+        return this.expandedGroups().has(label);
     }
 
     get userInitials(): string {
         const user = this.auth.currentUser();
         if (!user) return '?';
-        return `${user.fullName.charAt(0)}`.toUpperCase();
+        return user.fullName.charAt(0).toUpperCase();
     }
 }

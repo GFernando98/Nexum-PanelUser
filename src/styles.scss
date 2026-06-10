@@ -241,6 +241,27 @@ body {
   font-family: var(--font-family);
 }
 
+.nav-group-header {
+  cursor: pointer;
+  user-select: none;
+
+  .nav-chevron {
+    font-size: 0.75rem;
+    transition: transform var(--transition);
+  }
+}
+
+.nav-group-children {
+  margin-left: 0.5rem;
+  border-left: 2px solid var(--border-color);
+  padding-left: 0.25rem;
+}
+
+.nav-child-item {
+  padding-left: 1rem;
+  font-size: 0.85rem;
+}
+
 // ── Content ──────────────────────────────────────
 .content {
   flex: 1;

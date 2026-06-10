@@ -62,7 +62,7 @@ export class RolesService {
     }
 
     create(request: CreateRoleRequest) {
-        return this.http.post(`${this.baseUrl}/Create`, request);
+        return this.http.post(`${this.baseUrl}/Create`, request, { responseType: 'text' });
     }
 
     edit(id: string, request: EditRoleRequest) {
