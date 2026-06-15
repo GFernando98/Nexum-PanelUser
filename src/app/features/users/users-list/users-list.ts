@@ -50,6 +50,7 @@ export class UsersList implements OnInit {
   totalRecords = signal(0);
   pageSize = 10;
   search = '';
+  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
     this.load();
@@ -75,7 +76,14 @@ export class UsersList implements OnInit {
   }
 
   onSearch(): void {
-    this.load(1);
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.load(1);
+      this.searchTimeout = null;
+    }, 300);
   }
 
   onPageChange(event: any): void {
