@@ -1,0 +1,34 @@
+<div class="p-4">
+  <p-card [header]="isEdit() ? 'Editar tipo de lead' : 'Nuevo tipo de lead'">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-column gap-3">
+      <div class="flex flex-column gap-2">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" pInputText formControlName="name" />
+        <small class="text-red-500" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+          El nombre es obligatorio.
+        </small>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label for="description">Descripción</label>
+        <textarea id="description" pInputTextarea formControlName="description" rows="3"></textarea>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label for="icon">Color</label>
+        <div class="flex flex-wrap gap-2 align-items-center">
+          <p-colorPicker id="icon" formControlName="icon" [style]="{ width: '100%' }"></p-colorPicker>
+          <input id="icon" type="text" pInputText formControlName="icon" placeholder="#FFFFFF" style="min-width: 180px; max-width: 220px;" />
+        </div>
+        <small class="text-secondary">Selecciona un color o ingresa el código hexadecimal directamente.</small>
+      </div>
+
+      <div class="flex gap-2 justify-content-end">
+        <p-button label="Cancelar" severity="secondary" type="button" (onClick)="goBack()" />
+        <p-button [label]="isEdit() ? 'Guardar cambios' : 'Crear'" type="submit" [loading]="loading()" />
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-toast />

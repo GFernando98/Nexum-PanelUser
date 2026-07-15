@@ -1,43 +1,43 @@
 <div class="flex flex-column gap-4 p-4">
-
   <div class="flex align-items-center justify-content-between flex-wrap gap-3">
-    <h2 class="m-0">Roles</h2>
+    <h2 class="m-0">Profesiones</h2>
     <div class="flex align-items-center gap-3">
       <p-iconfield>
         <p-inputicon styleClass="pi pi-search" />
-        <input pInputText [(ngModel)]="search" (ngModelChange)="onSearch()" placeholder="Buscar rol..."
+        <input pInputText [(ngModel)]="search" (ngModelChange)="onSearch()" placeholder="Buscar profesión..."
           style="width: 280px" />
       </p-iconfield>
-      <p-button *hasPermission="Permission.CanCreateRoles" label="Nuevo rol" icon="pi pi-plus" (onClick)="goToCreate()">
+      <p-button *hasPermission="Permission.CanCreateProfessions" label="Nueva profesión" icon="pi pi-plus"
+        (onClick)="goToCreate()">
       </p-button>
     </div>
   </div>
 
-  <p-table [value]="roles()" [loading]="loading()" [lazy]="true" [paginator]="true" [rows]="pageSize"
+  <p-table [value]="professions()" [loading]="loading()" [lazy]="true" [paginator]="true" [rows]="pageSize"
     [totalRecords]="totalRecords()" (onPage)="onPageChange($event)" [rowsPerPageOptions]="[10, 25, 50]"
-    [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} roles"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} profesiones"
     styleClass="p-datatable-gridlines">
 
     <ng-template pTemplate="header">
       <tr>
         <th>Nombre</th>
-        <th style="width: 120px">Acciones</th>
+        <th style="width: 140px">Acciones</th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-role>
+    <ng-template pTemplate="body" let-profession>
       <tr>
-        <td>{{ role.name }}</td>
+        <td>{{ profession.name }}</td>
         <td>
           <div class="flex gap-2">
             <p-button *hasPermission="Permission.CanViewHistorie" icon="pi pi-history" [text]="true" [rounded]="true"
-              severity="secondary" (onClick)="openHistory(role)" pTooltip="Ver historial">
+              severity="secondary" (onClick)="openHistory(profession)" pTooltip="Ver historial">
             </p-button>
-            <p-button *hasPermission="Permission.CanEditRoles" icon="pi pi-pencil" [text]="true" [rounded]="true"
-              severity="info" (onClick)="goToEdit(role.id)" pTooltip="Editar">
+            <p-button *hasPermission="Permission.CanEditProfessions" icon="pi pi-pencil" [text]="true" [rounded]="true"
+              severity="info" (onClick)="goToEdit(profession.id)" pTooltip="Editar">
             </p-button>
-            <p-button *hasPermission="Permission.CanDeleteRoles" icon="pi pi-trash" [text]="true" [rounded]="true"
-              severity="danger" (onClick)="confirmDelete(role)" pTooltip="Eliminar">
+            <p-button *hasPermission="Permission.CanDeleteProfessions" icon="pi pi-trash" [text]="true" [rounded]="true"
+              severity="danger" (onClick)="confirmDelete(profession)" pTooltip="Eliminar">
             </p-button>
           </div>
         </td>
@@ -46,12 +46,10 @@
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="2" class="text-center p-4">No se encontraron roles.</td>
+        <td colspan="2" class="text-center p-4">No se encontraron profesiones.</td>
       </tr>
     </ng-template>
-
   </p-table>
-
 </div>
 
 <p-dialog [header]="historyTitle" [(visible)]="historyVisible" [modal]="true" [draggable]="false"

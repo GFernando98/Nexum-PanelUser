@@ -1,0 +1,20 @@
+<div class="p-4">
+  <p-card [header]="isEdit() ? 'Editar institución' : 'Nueva institución'">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-column gap-3">
+      <div class="flex flex-column gap-2">
+        <label for="name">Nombre</label>
+        <input id="name" type="text" pInputText formControlName="name" />
+        <small class="text-red-500" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+          El nombre es obligatorio.
+        </small>
+      </div>
+
+      <div class="flex gap-2 justify-content-end">
+        <p-button label="Cancelar" severity="secondary" type="button" (onClick)="goBack()" />
+        <p-button [label]="isEdit() ? 'Guardar cambios' : 'Crear'" type="submit" [loading]="loading()" />
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-toast />

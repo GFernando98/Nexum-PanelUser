@@ -52,5 +52,97 @@ export const dashboardRoutes: Routes = [
                     .then(m => m.RolesForm)
             }
         ]
+    },
+    {
+        path: 'professions',
+        children: [
+            {
+                path: '',
+                canActivate: [permissionGuard(Permission.CanViewProfessions)],
+                loadComponent: () => import('../professions/professions-list/professions-list')
+                    .then(m => m.ProfessionsList)
+            },
+            {
+                path: 'create',
+                canActivate: [permissionGuard(Permission.CanCreateProfessions)],
+                loadComponent: () => import('../professions/professions-form/professions-form')
+                    .then(m => m.ProfessionsForm)
+            },
+            {
+                path: 'edit/:id',
+                canActivate: [permissionGuard(Permission.CanEditProfessions)],
+                loadComponent: () => import('../professions/professions-form/professions-form')
+                    .then(m => m.ProfessionsForm)
+            }
+        ]
+    },
+    {
+        path: 'institutions',
+        children: [
+            {
+                path: '',
+                canActivate: [permissionGuard(Permission.CanViewInstitutions)],
+                loadComponent: () => import('../institutions/institutions-list/institutions-list')
+                    .then(m => m.InstitutionsList)
+            },
+            {
+                path: 'create',
+                canActivate: [permissionGuard(Permission.CanCreateInstitutions)],
+                loadComponent: () => import('../institutions/institutions-form/institutions-form')
+                    .then(m => m.InstitutionsForm)
+            },
+            {
+                path: 'edit/:id',
+                canActivate: [permissionGuard(Permission.CanEditInstitutions)],
+                loadComponent: () => import('../institutions/institutions-form/institutions-form')
+                    .then(m => m.InstitutionsForm)
+            }
+        ]
+    },
+    {
+        path: 'contact-relationships',
+        children: [
+            {
+                path: '',
+                canActivate: [permissionGuard(Permission.CanViewContactRelationships)],
+                loadComponent: () => import('../contact-relationships/contact-relationships-list/contact-relationships-list')
+                    .then(m => m.ContactRelationshipsList)
+            },
+            {
+                path: 'create',
+                canActivate: [permissionGuard(Permission.CanCreateContactRelationships)],
+                loadComponent: () => import('../contact-relationships/contact-relationships-form/contact-relationships-form')
+                    .then(m => m.ContactRelationshipsForm)
+            },
+            {
+                path: 'edit/:id',
+                canActivate: [permissionGuard(Permission.CanEditContactRelationships)],
+                loadComponent: () => import('../contact-relationships/contact-relationships-form/contact-relationships-form')
+                    .then(m => m.ContactRelationshipsForm)
+            }
+        ]
+    },
+    {
+        path: 'lead-types',
+        children: [
+            {
+                path: '',
+                canActivate: [permissionGuard(Permission.CanViewLeadTypes)],
+                loadComponent: () => import('../lead-types/lead-types-list/lead-types-list')
+                    .then(m => m.LeadTypesList)
+            },
+            {
+                path: 'create',
+                canActivate: [permissionGuard(Permission.CanCreateLeadTypes)],
+                loadComponent: () => import('../lead-types/lead-types-form/lead-types-form')
+                    .then(m => m.LeadTypesForm)
+            },
+            {
+                path: 'edit/:id',
+                canActivate: [permissionGuard(Permission.CanEditLeadTypes)],
+                loadComponent: () => import('../lead-types/lead-types-form/lead-types-form')
+                    .then(m => m.LeadTypesForm)
+            }
+        ]
     }
 ];

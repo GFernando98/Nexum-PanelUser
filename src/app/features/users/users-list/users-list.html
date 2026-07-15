@@ -43,6 +43,9 @@
                 </td>
                 <td>
                     <div class="flex gap-2">
+                        <p-button *hasPermission="Permission.CanViewHistorie" icon="pi pi-history" [text]="true"
+                            [rounded]="true" severity="secondary" (onClick)="openHistory(user)" pTooltip="Ver historial">
+                        </p-button>
                         <p-button *hasPermission="Permission.CanEditUsers" icon="pi pi-pencil" [text]="true"
                             [rounded]="true" severity="info" (onClick)="goToEdit(user.id)" pTooltip="Editar">
                         </p-button>
@@ -63,6 +66,37 @@
     </p-table>
 
 </div>
+
+<p-dialog [header]="historyTitle" [(visible)]="historyVisible" [modal]="true" [draggable]="false"
+    [resizable]="false" [style]="{ width: '90vw', maxWidth: '1100px' }" (onHide)="closeHistory()">
+    <p-table [value]="historyEntries" [loading]="historyLoading" styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Username</th>
+                <th>Propiedad</th>
+                <th>Fecha</th>
+                <th>OldValue</th>
+                <th>NewValue</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{ item.userName }}</td>
+                <td>{{ item.property }}</td>
+                <td>{{ item.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                <td>{{ item.oldValue || '—' }}</td>
+                <td>{{ item.newValue || '—' }}</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5" class="text-center p-4">No hay historial para mostrar.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
 
 <p-confirmDialog />
 <p-toast />

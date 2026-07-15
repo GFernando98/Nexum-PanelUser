@@ -2,8 +2,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HasPermissionDirective } from '../../../core/authorization/has-permission.directive';
-import { Permission } from '../../../core/authorization/permissions.enum';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,11 +11,13 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { RoleDto, RolesService } from '../../../core/services/role.service';
+import { HasPermissionDirective } from '../../../core/authorization/has-permission.directive';
+import { Permission } from '../../../core/authorization/permissions.enum';
+import { ContactRelationshipDto, ContactRelationshipService } from '../../../core/services/contact-relationship.service';
 import { HistoryDto, HistoryService } from '../../../core/services/history.service';
 
 @Component({
-  selector: 'app-roles-list',
+  selector: 'app-contact-relationships-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,11 +33,11 @@ import { HistoryDto, HistoryService } from '../../../core/services/history.servi
     HasPermissionDirective
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './roles-list.html',
-  styleUrl: './roles-list.scss'
+  templateUrl: './contact-relationships-list.html',
+  styleUrl: './contact-relationships-list.scss'
 })
-export class RolesList implements OnInit {
-  private rolesService = inject(RolesService);
+export class ContactRelationshipsList implements OnInit {
+  private contactRelationshipService = inject(ContactRelationshipService);
   private historyService = inject(HistoryService);
   private router = inject(Router);
   private confirmation = inject(ConfirmationService);
@@ -45,7 +45,7 @@ export class RolesList implements OnInit {
 
   Permission = Permission;
 
-  roles = signal<RoleDto[]>([]);
+  contactRelationships = signal<ContactRelationshipDto[]>([]);
   loading = signal(true);
   totalRecords = signal(0);
   pageSize = 10;
@@ -62,14 +62,14 @@ export class RolesList implements OnInit {
 
   load(pageNumber = 1): void {
     this.loading.set(true);
-    this.rolesService.getAll({ pageNumber, pageSize: this.pageSize, parameter: this.search || undefined }).subscribe({
+    this.contactRelationshipService.getAll({ pageNumber, pageSize: this.pageSize, parameter: this.search || undefined }).subscribe({
       next: res => {
-        this.roles.set(res.data);
+        this.contactRelationships.set(res.data);
         this.totalRecords.set(res.totalCount);
         this.loading.set(false);
       },
       error: () => {
-        this.message.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los roles.' });
+        this.message.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las relaciones de contacto.' });
         this.loading.set(false);
       }
     });
@@ -91,16 +91,21 @@ export class RolesList implements OnInit {
     this.load(event.first / event.rows + 1);
   }
 
-  goToCreate(): void { this.router.navigate(['/roles/create']); }
-  goToEdit(id: string): void { this.router.navigate(['/roles/edit', id]); }
+  goToCreate(): void {
+    this.router.navigate(['/contact-relationships/create']);
+  }
 
-  openHistory(role: RoleDto): void {
-    this.historyTitle = `Historial de ${role.name}`;
+  goToEdit(id: string): void {
+    this.router.navigate(['/contact-relationships/edit', id]);
+  }
+
+  openHistory(contactRelationship: ContactRelationshipDto): void {
+    this.historyTitle = `Historial de ${contactRelationship.name}`;
     this.historyLoading = true;
     this.historyVisible = true;
     this.historyEntries = [];
 
-    this.historyService.getHistory('Role', role.id).subscribe({
+    this.historyService.getHistory('ContactRelationship', contactRelationship.id).subscribe({
       next: entries => {
         this.historyEntries = entries;
         this.historyLoading = false;
@@ -117,17 +122,17 @@ export class RolesList implements OnInit {
     this.historyEntries = [];
   }
 
-  confirmDelete(role: RoleDto): void {
+  confirmDelete(contactRelationship: ContactRelationshipDto): void {
     this.confirmation.confirm({
-      message: `¿Estás seguro de eliminar el rol <b>${role.name}</b>?`,
+      message: `¿Estás seguro de eliminar la relación de contacto <b>${contactRelationship.name}</b>?`,
       header: 'Confirmar eliminación',
       icon: 'pi pi-trash',
       acceptLabel: 'Eliminar',
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
-      accept: () => this.rolesService.delete(role.id).subscribe({
+      accept: () => this.contactRelationshipService.delete(contactRelationship.id).subscribe({
         next: () => {
-          this.message.add({ severity: 'success', summary: 'Éxito', detail: 'Rol eliminado.' });
+          this.message.add({ severity: 'success', summary: 'Éxito', detail: 'Relación de contacto eliminada.' });
           this.load();
         },
         error: err => this.message.add({ severity: 'error', summary: 'Error', detail: err.error?.error ?? 'Error al eliminar.' })

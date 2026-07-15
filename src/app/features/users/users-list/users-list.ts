@@ -14,7 +14,9 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { DialogModule } from 'primeng/dialog';
 import { UserDto, UsersService } from '../../../core/services/user.service';
+import { HistoryDto, HistoryService } from '../../../core/services/history.service';
 
 @Component({
   selector: 'app-users-list',
@@ -30,6 +32,7 @@ import { UserDto, UsersService } from '../../../core/services/user.service';
     ToastModule,
     IconFieldModule,
     InputIconModule,
+    DialogModule,
     HasPermissionDirective
   ],
   providers: [ConfirmationService, MessageService],
@@ -38,6 +41,7 @@ import { UserDto, UsersService } from '../../../core/services/user.service';
 })
 export class UsersList implements OnInit {
   private usersService = inject(UsersService);
+  private historyService = inject(HistoryService);
   private auth = inject(AuthService);
   private router = inject(Router);
   private confirmation = inject(ConfirmationService);
@@ -50,6 +54,10 @@ export class UsersList implements OnInit {
   totalRecords = signal(0);
   pageSize = 10;
   search = '';
+  historyVisible = false;
+  historyLoading = false;
+  historyEntries: HistoryDto[] = [];
+  historyTitle = 'Historial';
   private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
@@ -98,6 +106,29 @@ export class UsersList implements OnInit {
 
   goToEdit(id: string): void {
     this.router.navigate(['/users/edit', id]);
+  }
+
+  openHistory(user: UserDto): void {
+    this.historyTitle = `Historial de ${user.userName}`;
+    this.historyLoading = true;
+    this.historyVisible = true;
+    this.historyEntries = [];
+
+    this.historyService.getHistory('User', user.id).subscribe({
+      next: entries => {
+        this.historyEntries = entries;
+        this.historyLoading = false;
+      },
+      error: () => {
+        this.message.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el historial.' });
+        this.historyLoading = false;
+      }
+    });
+  }
+
+  closeHistory(): void {
+    this.historyVisible = false;
+    this.historyEntries = [];
   }
 
   confirmDelete(user: UserDto): void {

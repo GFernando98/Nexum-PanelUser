@@ -75,6 +75,37 @@ export class MainLayout {
                     permission: Permission.CanViewRoles
                 }
             ]
+        },
+        {
+            label: 'Personas',
+            icon: 'pi pi-id-card',
+            permission: null,
+            children: [
+                {
+                    label: 'Profesiones',
+                    icon: 'pi pi-briefcase',
+                    route: '/professions',
+                    permission: Permission.CanViewProfessions
+                },
+                {
+                    label: 'Instituciones',
+                    icon: 'pi pi-building',
+                    route: '/institutions',
+                    permission: Permission.CanViewInstitutions
+                },
+                {
+                    label: 'Parentescos',
+                    icon: 'pi pi-users',
+                    route: '/contact-relationships',
+                    permission: Permission.CanViewContactRelationships
+                },
+                {
+                    label: 'Tipos de Leads',
+                    icon: 'pi pi-chart-line',
+                    route: '/lead-types',
+                    permission: Permission.CanViewLeadTypes
+                }
+            ]
         }
     ];
 

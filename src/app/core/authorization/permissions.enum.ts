@@ -11,9 +11,30 @@ export enum Permission {
     CanDeleteRoles = 7,
     CanViewRoles = 8,
 
-    // Countries
-    CanCreateCountries = 9,
-    CanEditCountries = 10,
-    CanDeleteCountries = 11,
-    CanViewCountries = 12,
+    // History
+    CanViewHistorie = 9,
+
+    // Professions
+    CanCreateProfessions = 20,
+    CanEditProfessions = 21,
+    CanDeleteProfessions = 22,
+    CanViewProfessions = 23,
+
+    // Institutions
+    CanCreateInstitutions = 25,
+    CanEditInstitutions = 26,
+    CanDeleteInstitutions = 27,
+    CanViewInstitutions = 28,
+
+    // Contact relationships
+    CanCreateContactRelationships = 30,
+    CanEditContactRelationships = 31,
+    CanDeleteContactRelationships = 32,
+    CanViewContactRelationships = 33,
+
+    // Lead types
+    CanCreateLeadTypes = 35,
+    CanEditLeadTypes = 36,
+    CanDeleteLeadTypes = 37,
+    CanViewLeadTypes = 38,
 }
